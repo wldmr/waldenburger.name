@@ -22,10 +22,16 @@
             transform: translate(-50%, -50%);
             min-width: 5em;
             border-radius: 0.2ex;
+            transition: 500ms ease;
+        }
+
+        code {
+            font-family: "Fira Code", monospace;
         }
 
         .sep {
             color: rgb(155, 155, 155);
+            transform: translateY(-0.3lh);
         }
 
         #email {
@@ -34,19 +40,79 @@
             word-wrap: unset;
             text-decoration: none;
         }
+
+        #tagline {
+            font-size: x-small;
+            /* 
+             *dirty hack so slight differences between fonts
+             * don't change the bounding box.
+             */
+            height: 1.1em;
+        }
+
+
+        .fade-out {
+            opacity: 0;
+            transition: 500ms ease;
+        }
+
+        .fade-in {
+            opacity: 1;
+            transition: 500ms ease;
+        }
     </style>
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Fira+Code:400' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
 
     <main>
         <a id="email" href="mailto:andreas@waldenburger.name?subject=hi" title="say hi">
-            <span class="name">andreas</span><span class="sep">@</span><span class="name">waldenburger</span><span class="sep">.name</span>
+            <span class="name">andreas</span><span class="sep">@</span><span class="name">waldenburger</span><span
+                class="sep">.name</span>
         </a>
-        <p style="font-size: x-small;">not a designer</p>
+        <p id="tagline">tech person</p>
     </main>
 
 </body>
+
+<script type="application/javascript">
+
+    onpageshow = event => {
+        window.taglineInterval = window.setInterval(changeTagline, 6000);
+        console.log(`Started interval ${window.taglineInterval}`);
+    };
+    onpagehide = event => {
+        window.clearInterval(window.taglineInterval);
+        console.log(`Cleared interval ${window.taglineInterval}`);
+    };
+
+    const taglines = [
+        "tech person",
+        "buzzword driven design",
+        "object orientation and other design patterns",
+        "taste driven development",
+
+        "“Huh. This should work …”",
+        "“Really? Can you show me?”",
+
+        "<code>free(snark);</code>",
+        "<code>$ git push && shutdown -h now</code>",
+        "<code>dev :: Problem -> Data -> Solution</code>",
+    ];
+
+    const changeTagline = () => {
+        let tagline = document.getElementById("tagline");
+        tagline.className = "fade-out"
+        window.setTimeout(() => {
+            // prevent the same element appearing twice in succession
+            let candidates = taglines.filter(text => text !== tagline.innerHTML);
+            tagline.innerHTML = randomElement(candidates);
+            tagline.className = "fade-in";
+        }, 500);
+    };
+    const randomElement = array => array[Math.floor(Math.random() * array.length)]
+</script>
 
 </html>
